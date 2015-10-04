@@ -1,0 +1,101 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+.error{
+         display: none;
+         margin-left: 10px;
+         color: #0089CF;
+        font-family: 'interstatemazda-regular';
+        font-size: 12px;
+     }		
+</style>
+<header>
+    <div class="header-cont">
+        <div class="header-social">
+            <a href="https://www.facebook.com/SydneyThunder" class="header-social-facebook"></a>
+            <a href="https://twitter.com/ThunderBBL" class="header-social-twitter"></a>
+        </div>
+    </div>
+    <div class="mazda-logo"></div>
+    <a href="/" class="festival-logo"></a>
+</header>
+<div class="refer-cont">
+    <section class="refer">
+        <div class="form-cont">
+            <h1>Resend my unique festival number</h1>
+
+            <div id="mount">
+                <label for="email">Your email*</label>
+                <input name="email" id="email">
+                <div class="error">This field is required</div>
+                <p><label class="submit-register">Haven’t registered yet? <a href="/#register">Register Now</a></label></p>
+                <div class="clear"></div>
+                <button data-remodal-action="confirm" class="btn" id="btnSubmit">Submit</button>
+            </div>
+        </div>
+    </section>
+</div>
+<footer>
+    <div class="footer-cont">
+        <div class="header-social">
+            <a href="https://www.facebook.com/SydneyThunder" class="header-social-facebook"></a>
+            <a href="https://instagram.com/ThunderBBL/" class="header-social-instagram"></a>
+            <a href="https://twitter.com/ThunderBBL" class="header-social-twitter"></a>
+        </div>
+        <div class="footer-1">
+            <div class="footer-inside">
+                <a href="http://www.mazda.com.au/dealers/">Find a Mazda dealer</a>
+                <a href="/Home/ResendCode">Resend my unique festival number</a>
+                <a href="mailto:support@mazdathunderfesltival.com.au">Contact us</a>
+                <div class="long">&copy; Copyright 2015 lorem ipsum  |  <a href="privacy.html">Privacy statement</a>  |  <a href="terms.html">Terms and conditions</a></div>
+            </div>
+        </div>
+        <div class="footer-2">
+            <div class="footer-inside">
+                <a href="http://www.sydneythunder.com.au/" class="footer-thunder"></a>
+                <a href="http://www.mazda.com.au/" class="footer-mazda"></a>
+            </div>
+        </div>
+    </div>
+</footer>
+<script type="text/javascript">
+
+    $("#btnSubmit").click(function (event) {
+        event.preventDefault();
+
+        var email = $('#email');
+        if (email.val().length) {
+            email.addClass('valid').removeClass('invalid');
+            email.next().hide();
+        } else {
+            email.addClass('invalid').removeClass('valid');
+            email.next().show();
+        }
+
+        if (!email.val().length) {
+            return;
+        }
+
+        $.ajax({
+            type: "POST",
+            url: "/Home/Recover",
+            data: JSON.stringify(email.val()),
+            contentType: "application/json",
+            cache: false, // Do not cache the page
+            success: function(msg) {
+                $('#mount').text('​Your festival number has been resent to your registered email address.');
+                //if (msg.success) {
+                //    $("#myModal").modal('hide');
+                //    location.reload();
+                //} else {
+                //    $("#MessageToClient").text("The data was not updated.");
+                //}
+            },
+            error: function() {
+                // $("#MessageToClient").text("The web server had an error.");
+            }
+        });
+        return false;
+    });
+</script>

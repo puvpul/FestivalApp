@@ -1,0 +1,168 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<header>
+    <div class="header-cont">
+        <div class="header-social">
+            <a href="https://www.facebook.com/SydneyThunder" class="header-social-facebook"></a>
+           
+            <a href="https://twitter.com/ThunderBBL" class="header-social-twitter"></a>
+        </div>
+    </div>
+    <div class="mazda-logo"></div>
+    <a href="#" class="festival-logo"></a>
+</header>
+<div class="bx-wrapper" style="max-width: 100%;">
+    <div class="bx-viewport" style="width: 100%; overflow: hidden; position: relative;">
+        <ul class="bxslider" style="width: 315%; position: relative; transition-duration: 0s; transform: translate3d(-1199px, 0px, 0px);">
+            <li style="float: left; list-style: none; position: relative; width: 1199px;" class="bx-clone">
+                <img src="/Content/images/hero1.jpg" />
+                <p>Go in the draw to win over $36,500 worth of prizes thanks to Mazda!</p>
+            </li>
+        </ul>
+    </div><div class="bx-controls bx-has-pager"><div class="bx-pager bx-default-pager"><div class="bx-pager-item"><a href="" data-slide-index="0" class="bx-pager-link active">1</a></div></div></div>
+</div>
+
+
+<section>
+    <div class="section-cont">
+        <div class="btns">
+           
+            @Html.ActionLink("Register Now To Win!", "Registration", null, null, new { id = "register", @class = "btn-large" })
+            <!--<a href="" class="btn">Play Mazda Mission</a>-->
+        </div>
+        <div class="intro-text">Be part of the Sydney Thunder Festival brought to you by Mazda! It’s time to get amongst it with heaps of opportunities to get once-in-a-lifetime experiences and money-can’t-buy prizes. Over six weeks, stacks of lucky fans will win from the huge prize pool. Watch this space as the prizes are revealed on October 13!</div>
+        <div class="ball"></div>
+        <div class="ball2"></div>
+    </div>
+</section>
+<section class="move-up">
+    <h2>What kind of fan are you?</h2>
+    <div class="section-cont">
+        <div class="intro-text-2">Pick from any or all of the four categories below and register now to enter the draw. Refer friends and family to register and you could nab two bonus entries to increase your chances of winning. Or for even more, get five bonus entries for each test drive at a Mazda Dealership and ten bonus entries when you buy a new Mazda! As a registered member, from October 13, you’ll also have the chance to play the online Mazda Mission Game and go into the draw to take home a fantastic prize (stay tuned for further details)!</div>
+    </div>
+    <div class="cats-cont">
+        <div class="section-cont">
+            <ul class="cats">
+                <li>
+                    <h3>Ultimate Spectator</h3>
+                    <p>From the couch or the crowd, you never miss a game.  Register in this category for exclusive opportunities and giveaways for the fans that just can’t get enough.</p>
+                    <!--<a href="" class="cats-link">View prizes</a>-->
+                </li>
+                <li>
+                    <h3>The Cricket Buff</h3>
+                    <p>Know your cricket or reckon you could have been a contender? Register in this category for select prizes that’ll keep you in top form.</p>
+                    <!--<a href="" class="cats-link">View prizes</a>-->
+                </li>
+                <li>
+                    <h3>Corporate Crowd</h3>
+                    <p>Looking to impress? Sign up here and you could be wowing your colleagues and partners with VIP experiences.</p>
+                    <!--<a href="" class="cats-link">View prizes</a>-->
+                </li>
+                <li>
+                    <h3>Fanatic Family</h3>
+                    <p>Is your family crazy about cricket? Register in this category for ultimate family giveaways and chance-of-a-lifetime offers that’ll thrill the whole clan!</p>
+                    <!--<a href="" class="cats-link">View prizes</a>-->
+                </li>
+            </ul>
+        </div>
+    </div>
+</section>
+<section>
+    <h2>increase your chances of winning</h2>
+    <div class="morechances-cont">
+        <div class="section-cont">
+            <ul class="morechances">
+                <li>
+                    <h3>Refer Friends</h3>
+                    <p>Rally your friends and family together to register online – you’ll get bonus entries for every mate that signs up!</p>
+
+                    <a href="/Home/ReferFriends" class="btn-small">Refer Friends</a>
+
+                    <!-- @Html.ActionLink("Refer Friends", "ReferFriend", null, null, new {id = "btnPerson", @class = "btn-small"}) -->
+                </li>
+                <li>
+                    <h3>Play Mazda Mission</h3>
+                    <p>Put your driving skills to the test with the online Mazda Mission game. Coming soon. Watch this space.</p>
+                    <a href="#" class="btn-small grey">Coming soon</a>
+                </li>
+                <li>
+                    <h3>Meet your local dealer</h3>
+                    <p>Drop in to your local Mazda Dealer for a test drive and more chances to win!<a href="http://www.mazda.com.au/dealers/">Find a Mazda dealer</a><br/></p>
+                    @Html.ActionLink("Submit Points", "SubmitPoints", null, null, new {id = "btnPoints", @class = "btn-small"})
+                </li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<div class="modal fade in" id="myModal" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" id="modalContent">
+            
+        </div>
+    </div>
+</div>
+
+
+<footer>
+    <div class="footer-cont">
+        <div class="header-social">
+            <a href="https://www.facebook.com/SydneyThunder" class="header-social-facebook"></a>
+            <a href="https://instagram.com/ThunderBBL/" class="header-social-instagram"></a>
+            <a href="https://twitter.com/ThunderBBL" class="header-social-twitter"></a>
+        </div>
+        <div class="footer-1">
+            <div class="footer-inside">
+                <a href="http://www.mazda.com.au/dealers/">Find a Mazda dealer</a>
+                <a href="/Home/ResendCode">Resend my unique festival number</a>
+                <a href="mailto:support@mazdathunderfestival.com.au">Contact us</a>
+                <div class="long">&copy; Copyright 2015 | <a href="http://www.mazda.com.au/privacy-policy/">Privacy statement</a> | <a href="/Home/TermsAndConditions">Terms and conditions</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-2">
+            <div class="footer-inside">
+                <a href="http://www.sydneythunder.com.au/" class="footer-thunder"></a>
+                <a href="http://www.mazda.com.au/" class="footer-mazda"></a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('.bxslider').bxSlider({
+            controls: false
+        });
+    });
+   
+</script>
+
+
+
+<script>
+    $(document).ready(function () 
+    {
+        $("#register").click(function () {
+            $("#modalContent").load(this.href, function() {
+                $("#myModal").modal('show');
+            });
+            return false;
+        });
+        $("#btnPerson").click(function () {
+            $("#modalContent").load(this.href, function() {
+                $("#myModal").modal('show');
+            });
+            return false;
+        });
+        $("btnPoints").click(function() {
+            $("#modalContent").load(this.href, function() {
+                $("#myModal").modal('show');
+            });
+            return false;
+        });
+    });
+</script>
+

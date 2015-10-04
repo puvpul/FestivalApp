@@ -1,0 +1,244 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .error {
+        display: none;
+        margin-left: 10px;
+        color: #0089CF;
+        font-family: 'interstatemazda-regular';
+        font-size: 12px;
+    }
+    input.invalid, textarea.invalid{
+        border: 2px solid #0089CF;
+    }
+</style>
+
+
+<header>
+    <div class="header-cont">
+        <div class="header-social">
+            <a href="https://www.facebook.com/SydneyThunder" class="header-social-facebook"></a>
+           
+            <a href="https://twitter.com/ThunderBBL" class="header-social-twitter"></a>
+        </div>
+    </div>
+    <div class="mazda-logo"></div>
+    <a href="/" class="festival-logo"></a>
+</header>
+
+<p id="MessageToClient" class="text-danger"></p>
+<p id="showData" class="text-danger"></p>
+<form id="refFrom" method="POST">
+    <section class="refer">
+        <div class="form-cont">
+            <h1>Refer friends</h1>
+            <p>For each mate that registers you’ll get two bonus entries – there’s no limit to how many friends you can refer so tell your mum, tell your neighbour, tell your colleagues and up your chances to win!</p>
+            <span id="nmSpn" clas="text-danger"></span>
+            
+            <div class="row">
+                <div class="col-sm-6">
+                    <label for="name">Your name*</label>
+                    <input name="name" id="name"/>
+                    <div class="error">This field is required</div>
+                </div>
+                <div class="col-sm-6">
+                    <label for="email">Your email*</label>
+                    <input name="email" id="email" onblur="getRefererMail()" />
+                    <div class="error">This field is required</div>
+                </div>
+            </div>
+            
+            <span id="emRefspn" class="text-danger" style="display: none !important;"></span>
+
+            <label class="register">Haven’t registered yet? <a href="/#register">Register Now</a></label>
+
+            <div class="row" id="template" style="display: none;">
+                <div class="col-sm-6">
+                    <label for="name" style="display: none;">Friend's name*</label>
+                    <input name="name" id="name" placeholder="Name" />
+                    <div class="error">This field is required</div>
+                </div>
+                <div class="col-sm-6">
+                    <label for="email" style="display: none;">Friend's email*</label>
+                    <input name="email" id="email" onblur="getRefererMail()" placeholder="Email" />
+                    <div class="error">This field is required</div>
+                </div>
+            </div>
+
+            <div id="mount"></div>
+            
+            <div class="options">
+                <div class="option full">
+                    <input name="terms" id="terms" type="checkbox">
+                    <label for="terms">Yes, I have consent from my friends to provide their details.</label>
+                </div>
+                <span id="chkSpnTerms" class="error"></span>
+            </div>
+            <div class="clear"></div>
+            <button type="submit" id="referModalform" class="btn">Submit</button>
+        </div>
+    </section>
+</form>
+
+
+<script>
+    $(document).ready(function () {
+        var es = [];
+
+        for (var i = 0; i < 5; i++) {
+            var e = $('#template').clone();
+            e.show();
+            $('#mount').append(e);
+            es.push(e);
+            if (i == 0) {
+                e.find('label').show();
+            }
+        }
+
+        $("#referModalform").click(function () {
+            event.preventDefault();
+
+            var user = [];
+            user.userRegID = $("#showData").data("test");
+
+            var proceed = true;
+
+            ['name', 'email'].forEach(function(key) {
+                var input = $('#' + key);
+                if (!input.val().length) {
+                    input.removeClass('valid').addClass("invalid");
+                    input.next().show();
+                    proceed = false;
+                } else {
+                    input.addClass('valid').removeClass("invalid");
+                    input.next().hide();
+                }
+            });
+
+            for (var i = 0; i < 5; i++) {
+                var e = es[i];
+                if (i == 0) {
+                    var valid = true;
+                    var inputs = {};
+                    ['name', 'email'].forEach(function(key) {
+                        var input = e.find('input[name=' + key + ']');
+                        if (!input.val().length) {
+                            proceed = false;
+                            input.addClass('invalid').removeClass('valid');
+                            input.next().show();
+                            valid = false;
+                        } else {
+                            input.addClass('valid').removeClass('invalid');
+                            input.next().hide();
+                        }
+                        inputs[key] = input;
+                    });
+                    if (valid) {
+                        user.push({FriendName: inputs.name.val(), FriendEmail: inputs.email.val()});
+                    }
+                }
+            }
+
+            if ($('input[name="terms"]:checked').length == 0) {
+                $("#chkSpnTerms").show().text("Please accept the terms.");
+                proceed = false;
+            } else {
+                $("#chkSpnTerms").hide();
+            }
+
+            if (!proceed) {
+                return;
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/Home/ReferFriend",
+                data: JSON.stringify({from: {name: $('#name').val(), email: $('#email').val()}, to: user}),
+                contentType: "application/json",
+                cache: false, // Do not cache the page
+                success: function (msg) {
+                    // if (msg.success) {
+                    $('.form-cont').text('Thank you for inviting your friends to join the festival.');
+                    // } else {
+                    //     $("#MessageToClient").text("The data was not added");
+                    // }
+                },
+                error: function () {
+                    $("#MessageToClient").text("The web server had an error.");
+                }
+            });
+            return false;
+        });
+    });
+    $('#email').on('input', function () {
+        var input = $(this);
+        var re = /^[+a-zA-Z0-9._-]+@@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;//when using razor we cannot use at symbol for this add extra //
+        var is_email = re.test(input.val());
+        if (is_email) { input.removeClass("invalid").addClass("valid"); }
+        //else { input.removeClass("valid").addClass("invalid"); }
+    });
+
+    function CheckMail() { //This function call on text change.
+
+        var enteredEmail = $("#email").val();
+        //alert(enteredEmail);
+        var mailInput = { em: enteredEmail };
+
+        $.ajax({
+            type: "POST",
+            url: "Home/CheckEmail",
+            data: JSON.stringify(mailInput),//
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+
+                if (data == "true") {
+                    $("#MessageToClient").show();
+                    $("#MessageToClient").text(enteredEmail + " Email address isn’t valid.");
+                }
+               
+            },
+            error: function () {
+                $("#MessageToClient").text("The web server had an error.");
+            }
+        });
+        return false;
+    }
+
+    function getRefererMail() { //This function call on text change.
+        event.preventDefault();
+        var enteredEmail = $("#email").val();
+        //alert(enteredEmail);
+        var mailInput = { refEmail: enteredEmail };
+
+        $.ajax({
+            type: "POST",
+            url: "Home/GetRefererByEmail",
+            data: JSON.stringify(mailInput),//
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (usrData) {
+                //alert(data);
+                if (usrData) {
+                    //var refererDetails = JSON.parse(data);
+                    $("#showData").data("test", usrData.ID);
+
+                    //var storedVal = $("#showData").data("test");
+
+                }
+                else {
+                    $('#emRefspn').text(enteredEmail + " Email address isn’t valid.");
+                    //$("#MessageToClient").hide();
+
+                }
+            },
+            error: function () {
+                $("#MessageToClient").text("The web server had an error.");
+            }
+        });
+        return false;
+    }
+
+</script>

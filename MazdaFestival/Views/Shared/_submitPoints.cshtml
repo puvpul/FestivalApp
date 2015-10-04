@@ -1,0 +1,105 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+.error{
+         display: none;
+         margin-left: 10px;
+         color: #0089CF;
+        font-family: 'interstatemazda-regular';
+        font-size: 12px;
+     }		
+</style>
+<header>
+    <div class="header-cont">
+        <div class="header-social">
+            <a href="https://www.facebook.com/SydneyThunder" class="header-social-facebook"></a>
+            <a href="https://twitter.com/ThunderBBL" class="header-social-twitter"></a>
+        </div>
+    </div>
+    <div class="mazda-logo"></div>
+    <a href="/" class="festival-logo"></a>
+</header>
+<section class="refer">
+    <div class="form-cont">
+        <h1>Submit Points</h1>
+        <p>Been to visit your local Dealer for a test drive or bought yourself a new Mazda? Make sure you claim those bonus points to increase your chances to win. Submit your info below.</p>
+        
+        <label for="festivalCode">Your unique festival number*</label>
+        <input name="first_name" id="festivalCode">
+        <span class="error">This field is required</span>
+        
+        <label for="dealerCode">Test drive or purchase unique number*</label>
+        <input name="first_name" id="dealerCode">
+        <span class="error">This field is required</span>
+        
+        <label class="submit-register">Haven’t registered yet? <a href="/#register">Register Now</a></label>
+        <div class="clear"></div>
+        <button id="btnSubmitPoints" class="btn">Submit</button>
+    </div>
+</section>
+<footer>
+    <div class="footer-cont">
+        <div class="header-social">
+            <a href="https://www.facebook.com/SydneyThunder" class="header-social-facebook"></a>
+            <a href="https://instagram.com/ThunderBBL/" class="header-social-instagram"></a>
+            <a href="https://twitter.com/ThunderBBL" class="header-social-twitter"></a>
+        </div>
+        <div class="footer-1">
+            <div class="footer-inside">
+                <a href="http://www.mazda.com.au/dealers/">Find a Mazda dealer</a>
+                <a href="/Home/ResendCode">Resend my unique festival number</a>
+                <a href="mailto:support@mazdathunderfesltival.com.au">Contact us</a>
+                <div class="long">&copy; Copyright 2015 lorem ipsum  |  <a href="privacy.html">Privacy statement</a>  |  <a href="terms.html">Terms and conditions</a></div>
+            </div>
+        </div>
+        <div class="footer-2">
+            <div class="footer-inside">
+                <a href="http://www.sydneythunder.com.au/" class="footer-thunder"></a>
+                <a href="http://www.mazda.com.au/" class="footer-mazda"></a>
+            </div>
+        </div>
+    </div>
+</footer>
+<script type="text/javascript">
+
+    $("#btnSubmitPoints").click(function(event) {
+        event.preventDefault();
+        var userPoint = {};
+        userPoint.point = $("#festivalCode").val();
+        userPoint.userRegID = $("#dealerCode").val();
+
+        var id = $('#festivalCode');
+        if (id.val().length) {
+            id.next().hide();
+        } else {
+            id.next().show();
+        }
+
+        var code = $('#dealerCode');
+        if (code.val().length) {
+            code.next().hide();
+        } else {
+            code.next().show();
+        }
+
+        if (!id.val().length || !code.val().length) {
+            return;
+        }
+
+        $.ajax({
+            type: "POST",
+            url: "/Home/SubmitPoints",
+            data: JSON.stringify(userPoint),
+            contentType: "application/json",
+            cache: false, // Do not cache the page
+            success: function(msg) {
+                $('.form-cont').text('Congratulations! Your bonus entries are in and will help up your chances of being a Sydney Thunder Festival winner.');
+            },
+            error: function() {
+                $('.form-cont').text('Congratulations! Your bonus entries are in and will help up your chances of being a Sydney Thunder Festival winner.');
+            }
+        });
+        return false;
+    });
+</script>

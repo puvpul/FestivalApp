@@ -1,0 +1,310 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+   
+     .error{
+         display: none;
+         margin-left: 10px;
+         color: #0089CF;
+        font-family: 'interstatemazda-regular';
+        font-size: 12px;
+     }		
+		
+    .error_show{
+        color: red;
+        margin-left: 10px;
+    }
+		
+    input.invalid, textarea.invalid{
+        border: 2px solid #0089CF;
+    }
+
+    .text-danger {
+        color: #0089CF;
+        font-family: 'interstatemazda-regular';
+        font-size: 12px;
+    }
+</style>
+<div class="modal-header">
+    <a class="close popup-close" data-dismiss="modal" aria-hidden="True"></a>
+    <h1 class="modal-title modRegistrationHead">Registration form</h1>
+</div>
+<p id="MessageToClient" class="text-danger"></p>
+<form id="regForm" method="POST">
+    <div class="form-cont">
+        <p id="registrationDesc">You’re on your way to being in the running for the Sydney Thunder Festival prize draw.<br>Just fill out the form below, hit ‘Register’ and you’re in!</p>
+        <label for="first_name">First Name*</label>
+        <input name="first_name" id="firstName">
+        <span class="error">This field is required</span>
+        <label for="last_name">Last Name*</label>
+        <input name="last_name" id="lastName">
+        <span class="error">This field is required</span>
+        <label>What kind of fan are you?*</label>
+        <div class="options">
+            <div class="option">
+                <input name="fanType" value="ultimate_spectator" type="checkbox">
+                <label for="ultimate_spectator">Ultimate Spectator</label>
+            </div>
+            <div class="option">
+                <input name="fanType" value="corporate_crowd" type="checkbox">
+                <label for="corporate_crowd">Corporate Crowd</label>
+            </div>
+            <div class="option">
+                <input name="fanType" value="the_cricket_buff" type="checkbox">
+                <label for="the_cricket_buff">The Cricket Buff</label>
+            </div>
+            <div class="option">
+                <input name="fanType" value="fanatic_family" type="checkbox">
+                <label for="fanatic_family">Fanatic Family</label>
+            </div>
+        </div>
+        <span id="chkSpn" class="text-danger"></span>
+        <label for="email">Email*</label>
+        <input type="text" name="email" id="email" onblur="CheckMail()">
+        <span class="error">This field is required</span>
+
+        <label for="phone">Phone*</label>
+        <input name="phone" id="phone">
+        <span class="error">This field is required</span>
+        
+        <label for="age">Age*</label>
+        <input name="age" id="age">
+        <span class="error">This field is required</span>
+
+        <label for="postcode">Postcode*</label>
+        <input name="postcode" id="postcode">
+        <span class="error">This field is required</span>
+
+        <label for="model">Do you drive a Mazda?</label>
+        <select name="model" id="model">
+            <option>- Please Select -</option>
+            <option>Yes</option>
+            <option>No</option>
+        </select>
+
+        <div id="ddlDealerContainer">
+            <label for="model">Preferred Dealer</label>
+            <select id="ddlDealers"></select>
+        </div>
+       
+        <label for="timeline">When are you looking to buy your next car?</label>
+        <select name="timeline" id="timeline">
+            <option>- Please Select -</option>
+            <option>0 - 3 months</option>
+            <option>3 - 6 months</option>
+            <option>6 - 12 months</option>
+            <option>12 + months</option>
+        </select>
+        <label>What do you currently drive?</label>
+        <input type="text" id="currentMake" placeholder="Make" class="half" />
+        <input type="text" id="currentModel" placeholder="Model" class="half2" />
+        <label for="hear">How did you hear about the festival?</label>
+        <select name="hear" id="hear">
+            <option>- Please Select -</option>
+            <option>Email</option>
+            <option>Social</option>
+            <option>Sydney Thunder</option>
+            <option>Mazda Website</option>
+            <option>Mazda Dealer</option>
+            <option>Friend</option>
+            <option>At the match</option>
+            <option>Other</option>
+        </select>
+        <div class="options">
+            <div class="option full">
+                <input name="terms" id="terms" type="checkbox">
+                <label for="terms">Yes, I agree to the <a href="terms.html">Terms and Conditions</a> and would like to receive Sydney Thunder Festival communications</label>
+            </div>
+            <span id="chkSpnTerms" class="text-danger"></span>
+            <div class="option full">
+                <input name="subscribe" id="subscribe" type="checkbox">
+                <label for="subscribe">Yes, please keep me in the loop on Mazda events and special offers</label>
+            </div>
+        </div>
+        <div class="clear"></div>
+        <button type="submit" id="registerModalform" class="btn">Register</button>
+    </div>
+</form>
+
+
+<script type="text/javascript">
+    
+    function CheckMail() { //This function call on text change.
+        
+        var enteredEmail = $("#email").val();
+        
+        var mailInput = { em: enteredEmail };
+
+        $.ajax({
+            type: "POST",
+            url: "Home/CheckEmail", 
+            data: JSON.stringify(mailInput),//
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+               
+                if (data == "true") {
+                    $('.form-cont').text(enteredEmail + " Email is not available.");
+                    //$("#MessageToClient").text(enteredEmail + " Email is not available.");
+                }
+               
+            },
+            error: function () {
+                // $("#MessageToClient").text("The web server had an error.");
+            }
+        });
+        return false;
+    }
+  
+</script>
+
+
+<script>
+    $(document).ready(function() {
+        $("#ddlDealerContainer").css('display', 'none');
+        $('#model').on('change', function() {
+
+            var selected = $('#model option:selected').text();
+            if (selected == "Yes") {
+                $("#ddlDealerContainer").show();
+                $.getJSON("/Home/GetAllDealers",
+                    function(dealers) {
+                       
+                        $("#ddlDealers").empty();
+                       
+                        $.each(dealers, function(i, dealer) {
+                            $("#ddlDealers").append($('<option/>', {
+                                value: dealer.ID,
+                                text: dealer.Name
+                            }));
+                        });
+                    });
+            } else {
+                $("#ddlDealerContainer").css('display','none');
+            }
+        });
+
+            
+        $("#registerModalform").click(function (event) {
+           
+            event.preventDefault();
+
+            var proceed = true;
+            
+            var user = {search: location.search};
+            
+            user.firstName = $("#firstName").val();
+            user.lastName = $("#lastName").val();
+            user.fanType = $('input[name="fanType"]:checked').val();
+            
+            user.email = $("#email").val();
+            user.phone = $("#phone").val();
+            user.age = $("#age").val();
+            user.postCode = $("#postcode").val();
+            //if()
+            user.mazdaOwner = $('#model option:selected').text();
+            
+            user.timeLine = $('#timeline option:selected').text();
+            user.currentMake = $("#curentMake").val();
+            user.curentModel = $("#currentModel").val();
+            user.hear = $('#hear option:selected').text();
+           
+            if (user.firstName == '') {
+                $("#firstName").removeClass("valid").addClass("invalid");
+                $("#firstName").next().show();
+                proceed = false;
+            } else {
+                $("#firstName").removeClass("invalid").addClass("valid");
+                $("#firstName").next().hide();
+            }
+            if (user.lastName == '') {
+                $("#lastName").removeClass("valid").addClass("invalid");
+                $("#lastName").next().show();
+                proceed = false;
+            } else {
+                $("#lastName").removeClass("invalid").addClass("valid");
+                $("#lastName").next().hide();
+            }
+            if ($('input[name="fanType"]:checked').length == 0) {
+                $('#chkSpn').show();
+                $('#chkSpn').text("Please select at least one type.");
+                proceed = false;
+            } else {
+                $('#chkSpn').hide();
+            }
+
+            if (user.email == '') {
+                $("#email").removeClass("valid").addClass("invalid");
+                $("#email").next().show();
+                $("#email").next().css({ display: 'block' });
+                proceed = false;
+            } else {
+                $("#email").removeClass("invalid").addClass("valid");
+                $("#email").next().hide();
+            }
+            if (user.phone == '') {
+                $("#phone").removeClass("valid").addClass("invalid");
+                $("#phone").next().show();
+                $("#phone").next().css({ display: 'block' });
+                proceed = false;
+            } else {
+                $("#phone").removeClass("invalid").addClass("valid");
+                $("#phone").next().hide();
+            }
+            if (user.age == '') {
+                $("#age").removeClass("valid").addClass("invalid");
+                $("#age").next().show();
+                $("#age").next().css({ display: 'block' });
+                proceed = false;
+            } else {
+                $("#age").removeClass("invalid").addClass("valid");
+                $("#age").next().hide();
+            }
+            if (user.postCode == '') {
+                $("#postcode").removeClass("valid").addClass("invalid");
+                $("#postcode").next().show();
+                $("#postcode").next().css({ display: 'block' });
+                proceed = false;
+            } else {
+                $("#postcode").removeClass("invalid").addClass("valid");
+                $("#postcode").next().hide();
+            }
+            if ($('input[name="terms"]:checked').length == 0) {
+                $("#chkSpnTerms").text("Please select checkbox");
+                proceed = false;
+            } else {
+                $("#chkSpnTerms").text("");
+            }
+
+            if (!proceed) {
+                return;
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/Home/Registration",
+                data: JSON.stringify(user),
+                contentType: "application/json",
+                cache: false, // Do not cache the page
+                success: function (msg) {
+                    if (msg) {
+                        
+                        $('.form-cont').text("Thank you for registering for the festival, good luck!");
+                        // $("#myModal").modal('hide');
+                        // location.reload();
+                    } else {
+                        window.alert("The data was not updated.");
+                        $("myModal").modal('hide');
+                    }
+                },
+                error: function () {
+                    $("#MessageToClient").text("The web server had an error.");
+                }
+            });
+            return false;
+        });
+
+    });
+   
+</script>
